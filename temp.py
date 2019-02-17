@@ -1,7 +1,9 @@
 import requests
 
-for x in range(10):
-    request = requests.get("https://www.imdb.com/title/tt%s/" % str(7740355).zfill(7))
-    print(request.status_code)
-    if x == 9:
-        x = 7740355
+x = 1
+while True:
+    status_code = requests.get("https://www.imdb.com/title/tt%s/" % str(x).zfill(7)).status_code
+    print(x)
+    if status_code == 404:
+        break
+    x += 1
