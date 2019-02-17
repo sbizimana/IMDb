@@ -1,6 +1,7 @@
 import imdb
 import sqlite3
 import requests
+import os
 
 movies = imdb.IMDb()
 conn = sqlite3.connect("movies.db")
@@ -14,7 +15,7 @@ c = conn.cursor()
 
 c.execute('''CREATE TABLE IF NOT EXISTS Movies (ID INTEGER, Title TEXT, Year INTEGER, Genre TEXT, Director TEXT, Writer TEXT, Runtime INTEGER, 'Production Company' TEXT)''')
 
-limit = 2
+limit = 1
 try:
     last_index = open('last_index.txt', 'r')
     index = int(last_index.read()) + 1
@@ -24,7 +25,8 @@ except FileNotFoundError as e:
 counter = 1
 while True:
     if requests.get("https://www.imdb.com/title/tt%s/" % str(index).zfill(7)).status_code == 404:
-        print("Invalid Movie Link: https://www.imdb.com/title/tt%s/" % str(index).zfill(7))
+        print("Invalid index: %d \nCounter: %d\n" % (index, counter))
+        index += 1
     else:
         movie_id = str(index).zfill(7)
         data = movies.get_movie(movie_id).data
@@ -61,14 +63,14 @@ while True:
                      else None]
 
             c.execute('''INSERT INTO Movies VALUES (?,?,?,?,?,?,?,?)''', movie)
-            print("Accepted index: %d \nCounter: %d" % (index, counter))
+            counter += 1
+            print("Accepted index: %d \nCounter: %d\n" % (index, counter))
             if counter >= limit:
                 with open('last_index.txt', 'w') as file:
                     file.write(str(index))
                 break
-            counter += 1
         if not accepted:
-            print("Rejected index: %d \nCounter: %d" % (index, counter))
+            print("Rejected index: %d \nCounter: %d\n" % (index, counter))
         index += 1
 
 conn.commit()
