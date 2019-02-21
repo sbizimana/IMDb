@@ -1,9 +1,10 @@
-import requests
+import imdb
 
-x = 1
-while True:
-    status_code = requests.get("https://www.imdb.com/title/tt%s/" % str(x).zfill(7)).status_code
-    print(x)
-    if status_code == 404:
-        break
-    x += 1
+
+movies = imdb.IMDb()
+
+x = movies.get_movie('0002927').data
+print(x)
+
+print('color info' in x)
+print('countries' in x)
