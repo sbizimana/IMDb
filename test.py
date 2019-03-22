@@ -16,7 +16,7 @@ c = conn.cursor()
 c.execute(
     '''CREATE TABLE IF NOT EXISTS Movies (ID INTEGER, Title TEXT, Year INTEGER, Genre TEXT, Director TEXT, Writer TEXT, Runtime INTEGER, 'Production Company' TEXT)''')
 
-limit = 300
+limit = 1000
 try:
     last_index = open('last_index.txt', 'r')
     index = int(last_index.read()) + 1
