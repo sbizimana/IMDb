@@ -3,7 +3,7 @@ import sqlite3
 import requests
 
 movies = imdb.IMDb()
-conn = sqlite3.connect("movies.db")
+conn = sqlite3.connect("movies2.db")
 c = conn.cursor()
 
 c.execute('''DROP TABLE Performers''')
@@ -13,61 +13,76 @@ c.execute('''DROP TABLE MoviesData''')
 c.execute('''CREATE TABLE IF NOT EXISTS Performers (CharacterID TEXT, Name TEXT)''')
 c.execute('''CREATE TABLE IF NOT EXISTS Films (MovieID TEXT, Title TEXT)''')
 c.execute('''CREATE TABLE IF NOT EXISTS Directors (DirectorID TEXT, Name TEXT)''')
-c.execute('''CREATE TABLE IF NOT EXISTS MoviesData (MovieID TEXT, CharacterID TEXT, Year INTEGER, Genre TEXT, DirectorID TEXT)''')
+c.execute('''CREATE TABLE IF NOT EXISTS MoviesData (MovieID TEXT, CharacterID TEXT, DirectorID TEXT, Genre TEXT, Rating REAL, Runtime INTEGER, Date INTEGER, Month INTEGER, Year INTEGER)''')
 
-limit = 3
+c.execute('''CREATE TABLE IF NOT EXISTS InvalidIDs (MovieID TEXT)''')
+
+limit = 100
 try:
-    last_index = open('last_index1m.txt', 'r')
+    last_index = open('last_index1x.txt', 'r')
     index = int(last_index.read()) + 1
 except FileNotFoundError as e:
-    index = 1
+    index = 941
 
 counter = 0
 while True:
-    if requests.get("https://www.imdb.com/title/tt%s/" % str(index).zfill(7)).status_code == 404:
+    movie_id = str(index).zfill(7)
+    if requests.get("https://www.imdb.com/title/tt%s/" % movie_id).status_code == 404:
         print("Invalid index: %d \nCounter: %d\n" % (index, counter))
+        c.execute('''INSERT INTO InvalidIDs VALUES (?)''', [movie_id])
         index += 1
     else:
-        movie_id = str(index).zfill(7)
         data = movies.get_movie(movie_id).data
         accepted = False
         is_film = data['kind'] is 'movie'
         has_title = 'title' in data
-        has_cast = 'cast' in data
         has_director = 'directors' in data
-        has_genre = 'genres' in data
         in_usa = 'United States' in data['countries'] if 'countries' in data else False
-        if is_film and has_title and has_cast and has_director and has_genre and in_usa:
+        if is_film and has_title and has_director and in_usa:
             accepted = True
 
-            performers = [[data['cast'][x].getID(), data['cast'][x].__str__()] for x in range(len(data['cast']))]
-            for performer in performers:
-                c.execute('''INSERT INTO Performers VALUES (?,?)''', performer)
-            c.execute('''CREATE TABLE temp AS SELECT DISTINCT * FROM Performers''')
-            c.execute('''DROP TABLE Performers''')
-            c.execute('''CREATE TABLE Performers AS SELECT * FROM temp''')
-            c.execute('''DROP TABLE temp''')
+            if 'cast' in data:
+                performers = [[data['cast'][x].getID(), data['cast'][x].__str__()] for x in range(len(data['cast']))]
+                for performer in performers:
+                    c.execute('''SELECT CharacterID FROM Performers WHERE CharacterID = ?''', [performer[0]])
+                    if c.fetchone() is None:
+                        c.execute('''INSERT INTO Performers VALUES (?,?)''', performer)
 
             movie = [movie_id, data['title']]
             c.execute('''INSERT INTO Films VALUES (?,?)''', movie)
 
             directors = [[data['directors'][x].getID(), data['directors'][x].__str__()] for x in range(len(data['directors']))]
             c.execute('''SELECT DirectorID FROM Directors''')
-
             for director in directors:
-                c.execute('''INSERT INTO Directors VALUES (?,?)''', director)
-            c.execute('''CREATE TABLE temp AS SELECT DISTINCT * FROM Directors''')
-            c.execute('''DROP TABLE Directors''')
-            c.execute('''CREATE TABLE Directors AS SELECT * FROM temp''')
-            c.execute('''DROP TABLE temp''')
+                c.execute('''SELECT DirectorID FROM Directors WHERE DirectorID = ?''', [director[0]])
+                if c.fetchone() is None:
+                    c.execute('''INSERT INTO Directors VALUES (?,?)''', director)
 
-            for x in range(len(data['cast'])):
+            month_abbr = {'Jan': 1, 'Feb': 2, 'Mar': 3, 'Apr': 4, 'May': 5, 'Jun': 6,
+                          'Jul': 7, 'Aug': 8, 'Sep': 9, 'Oct': 10, 'Nov': 11, 'Dec': 12}
+            has_date = False
+            if 'original air date' in data:
+                has_date = True
+                date_and_month = True
+                if data['original air date'][0] in "0123":
+                    date_temp = int(data['original air date'][:2])
+                else:
+                    date_temp = None
+                    date_and_month = False
+                month_temp = data['original air date'][3:6] if date_and_month else data['original air date'][0:3]
+
+            genre = data['year'] if 'year' in data else None
+            rating = data['rating'] if 'rating' in data else None
+            runtime = int(data['runtimes'][0]) if 'runtimes' in data else None
+            date = date_temp if has_date else None
+            month = month_abbr[month_temp] if has_date else None
+            year = data['year'] if 'year' in data else None
+            for x in range(len(data['cast'] if 'cast' in data else '1')):
                 for y in range(len(data['directors'])):
-                    c.execute('''INSERT INTO MoviesData VALUES (?,?,?,?,?)''', [movie_id,
-                                                                                data['cast'][x].getID(),
-                                                                                data['year'],
-                                                                                data['genres'][0],
-                                                                                data['directors'][y].getID()])
+                    c.execute('''INSERT INTO MoviesData VALUES (?,?,?,?,?,?,?,?,?)''', [movie_id,
+                                                                                data['cast'][x].getID() if 'cast' in data else None,
+                                                                                data['directors'][y].getID(),
+                                                                                genre, rating, runtime, date, month, year])
 
             counter += 1
             print("Accepted index: %d \nCounter: %d\n" % (index, counter))
@@ -76,7 +91,7 @@ while True:
                     file.write(str(index))
                 break
     if not accepted:
-        print("Rejected index: %d \nCounter: %d\n" % (index, counter))
+        print("Rejected index: %d \nCounter: %d" % (index, counter))
     index += 1
 
 conn.commit()
