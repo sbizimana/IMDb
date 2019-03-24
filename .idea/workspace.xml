@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="96ba93dd-1e05-4500-9847-f88fb27723f2" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/last_index1.txt" beforeDir="false" afterPath="$PROJECT_DIR$/last_index1.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/movies.db" beforeDir="false" afterPath="$PROJECT_DIR$/movies.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/movies2.db" beforeDir="false" afterPath="$PROJECT_DIR$/movies2.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/movies2.db-journal" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/temp.py" beforeDir="false" afterPath="$PROJECT_DIR$/temp.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/temp1.py" beforeDir="false" afterPath="$PROJECT_DIR$/temp1.py" afterDir="false" />
     </list>
@@ -19,8 +19,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/temp.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="159">
-              <caret line="29" column="54" selection-start-line="29" selection-start-column="54" selection-end-line="29" selection-end-column="54" />
+            <state>
+              <caret line="21" column="37" selection-start-line="21" selection-start-column="37" selection-end-line="21" selection-end-column="37" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
               </folding>
@@ -32,7 +32,7 @@
         <entry file="file://$PROJECT_DIR$/last_index1.txt">
           <provider selected="true" editor-type-id="text-editor">
             <state>
-              <caret column="1" selection-start-column="1" selection-end-column="1" />
+              <caret column="3" selection-start-column="3" selection-end-column="3" />
             </state>
           </provider>
         </entry>
@@ -40,7 +40,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/test.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="816">
+            <state relative-caret-position="663">
               <caret line="72" column="8" selection-start-line="72" selection-start-column="8" selection-end-line="73" selection-end-column="74" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
@@ -110,6 +110,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -125,7 +126,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -264,16 +264,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/last_index1.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="1" selection-start-column="1" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/test.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="816">
+        <state relative-caret-position="663">
           <caret line="72" column="8" selection-start-line="72" selection-start-column="8" selection-end-line="73" selection-end-column="74" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
@@ -288,10 +281,17 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/last_index1.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="3" selection-start-column="3" selection-end-column="3" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/temp.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="159">
-          <caret line="29" column="54" selection-start-line="29" selection-start-column="54" selection-end-line="29" selection-end-column="54" />
+        <state>
+          <caret line="21" column="37" selection-start-line="21" selection-start-column="37" selection-end-line="21" selection-end-column="37" />
           <folding>
             <element signature="e#0#11#0" expanded="true" />
           </folding>
